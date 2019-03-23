@@ -1,6 +1,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <structmember.h>
+#include <algorithm>
 
 #include "glm/glm.hpp"
 
@@ -30,7 +31,7 @@ PyObject * meth_sort(PyObject * self, PyObject * args, PyObject * kwargs) {
         keys[i] = i;
     }
 
-    // TODO: sort "keys" by "values"
+    std::sort(keys, keys + num_triangles, [values](int a, int b) { return values[a] < values[b]; });
 
     for (int i = 0; i < num_triangles; ++i) {
         *ptr++ = glm::ivec3 {keys[i] * 3 + 0, keys[i] * 3 + 1, keys[i] * 3 + 2};
