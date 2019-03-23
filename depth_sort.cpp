@@ -36,6 +36,8 @@ PyObject * meth_sort(PyObject * self, PyObject * args, PyObject * kwargs) {
         *ptr++ = glm::ivec3 {keys[i] * 3 + 0, keys[i] * 3 + 1, keys[i] * 3 + 2};
     }
 
+    free(values);
+
     PyBuffer_Release(&mesh_view);
     return res;
 }
