@@ -3,7 +3,6 @@ import platform
 from setuptools import Extension, setup
 
 target = platform.system().lower()
-print('target', target)
 
 extra_compile_args = []
 
@@ -13,6 +12,7 @@ if target.startswith('linux'):
 ext = Extension(
     name='depth_sort',
     sources=['depth_sort.cpp'],
+    extra_compile_args=extra_compile_args,
 )
 
 setup(
