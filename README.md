@@ -1,6 +1,6 @@
 # python-depth-sort
 
-A simple module to calculate mesh normals for python.
+A simple module to sort the triangles of a mesh for python.
 
 ## Install
 
