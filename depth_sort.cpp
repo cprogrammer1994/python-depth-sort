@@ -55,14 +55,14 @@ PyObject * meth_isort(PyObject * self, PyObject * args, PyObject * kwargs) {
         return 0;
     }
 
-    PyObject * res = PyBytes_FromStringAndSize(NULL, index_view.len);
+    int num_triangles = (int)(index_view.len / sizeof(glm::ivec3));
+    PyObject * res = PyBytes_FromStringAndSize(NULL, sizeof(glm::ivec3) * num_triangles);
     glm::ivec3 * ptr = (glm::ivec3 *)PyBytes_AS_STRING(res);
 
-    glm::ivec3 * triangles = (glm::ivec3 *)index_view.buf;
-
-    int num_triangles = (int)(index_view.len / sizeof(glm::ivec3));
     float * values = (float *)malloc(num_triangles * 8);
     int * keys = (int *)(values + num_triangles);
+
+    glm::ivec3 * triangles = (glm::ivec3 *)index_view.buf;
 
     for (int i = 0; i < num_triangles; ++i) {
         const glm::vec3 & vert = *(glm::vec3 *)((char *)mesh_view.buf + stride * triangles[i].x);
