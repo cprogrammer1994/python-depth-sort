@@ -17,3 +17,41 @@ python setup.py develop
 ```py
 import depth_sort
 ```
+
+### simple mesh
+
+```py
+# vertices
+mesh = np.array([
+    [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0]],
+    [[0.0, 0.0, 1.0], [1.0, 0.0, 1.0], [0.0, 1.0, 1.0]],
+], dtype='f4')
+
+result = depth_sort.sort(direction=(0.0, 0.0, -1.0), mesh=triangles, stride=12)
+# stride is the number of bytes to skip in mesh to get a new vertex
+# result is a bytes object
+
+sorted_index = np.frombuffer(result, dtype='i4').reshape(-1, 3)
+```
+
+### indexed mesh
+
+```py
+# vertices
+mesh = np.array([
+    [[0.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0]],
+    [[0.0, 0.0, 1.0], [1.0, 0.0, 1.0], [0.0, 1.0, 1.0]],
+], dtype='f4')
+
+# faces
+index = np.array([
+    [0, 1, 2],
+    [3, 4, 5],
+], dtype='i4')
+
+result = depth_sort.isort(direction=(0.0, 0.0, -1.0), mesh=triangles, index=index, stride=12)
+# stride is the number of bytes to skip in mesh to get a new vertex
+# result is a bytes object
+
+sorted_index = np.frombuffer(result, dtype='i4').reshape(-1, 3)
+```
