@@ -2,14 +2,29 @@
 #include <Python.h>
 #include <structmember.h>
 
-PyObject * meth_sort(PyObject * self, PyObject * args, PyObject * kwargs) {
-    static char * keywords[] = {NULL};
+#include "glm/glm.hpp"
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "", keywords)) {
+#define v_xyz(obj) &obj.x, &obj.y, &obj.z
+
+PyObject * meth_sort(PyObject * self, PyObject * args, PyObject * kwargs) {
+    static char * keywords[] = {"direction", "mesh", "stride", NULL};
+
+    glm::vec3 direction;
+    Py_buffer mesh_view;
+    int stride;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "(fff)y*i", keywords, v_xyz(direction), &mesh_view, &stride)) {
         return 0;
     }
 
-    Py_RETURN_NONE;
+    int num_triangles = (int)(mesh_view.len / (stride * 3));
+    PyObject * res = PyBytes_FromStringAndSize(NULL, sizeof(glm::ivec3) * num_triangles);
+    glm::ivec3 * ptr = (glm::ivec3 *)PyBytes_AS_STRING(res);
+
+    // TODO: sort
+
+    PyBuffer_Release(&mesh_view);
+    return res;
 }
 
 PyMethodDef module_methods[] = {
