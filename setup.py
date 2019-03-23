@@ -3,6 +3,7 @@ import platform
 from setuptools import Extension, setup
 
 target = platform.system().lower()
+print('target', target)
 
 extra_compile_args = []
 
