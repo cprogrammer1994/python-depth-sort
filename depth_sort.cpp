@@ -43,8 +43,49 @@ PyObject * meth_sort(PyObject * self, PyObject * args, PyObject * kwargs) {
     return res;
 }
 
+PyObject * meth_indexed_sort(PyObject * self, PyObject * args, PyObject * kwargs) {
+    static char * keywords[] = {"direction", "mesh", "index", "stride", NULL};
+
+    glm::vec3 direction;
+    Py_buffer mesh_view;
+    Py_buffer index_view;
+    int stride;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "(fff)y*y*i", keywords, v_xyz(direction), &mesh_view, &index_view, &stride)) {
+        return 0;
+    }
+
+    PyObject * res = PyBytes_FromStringAndSize(NULL, index_view.len);
+    glm::ivec3 * ptr = (glm::ivec3 *)PyBytes_AS_STRING(res);
+
+    glm::ivec3 * triangles = (glm::ivec3 *)index_view.buf;
+
+    int num_triangles = (int)(index_view.len / sizeof(glm::ivec3));
+    float * values = (float *)malloc(num_triangles * 8);
+    int * keys = (int *)(values + num_triangles);
+
+    for (int i = 0; i < num_triangles; ++i) {
+        const glm::vec3 & vert = *(glm::vec3 *)((char *)mesh_view.buf + stride * triangles[i].x);
+        values[i] = glm::dot(vert, direction);
+        keys[i] = i;
+    }
+
+    std::sort(keys, keys + num_triangles, [values](int a, int b) { return values[a] < values[b]; });
+
+    for (int i = 0; i < num_triangles; ++i) {
+        *ptr++ = triangles[keys[i]];
+    }
+
+    free(values);
+
+    PyBuffer_Release(&mesh_view);
+    PyBuffer_Release(&index_view);
+    return res;
+}
+
 PyMethodDef module_methods[] = {
     {"sort", (PyCFunction)meth_sort, METH_VARARGS | METH_KEYWORDS, 0},
+    {"indexed_sort", (PyCFunction)meth_indexed_sort, METH_VARARGS | METH_KEYWORDS, 0},
     {0},
 };
 
