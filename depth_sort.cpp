@@ -21,7 +21,20 @@ PyObject * meth_sort(PyObject * self, PyObject * args, PyObject * kwargs) {
     PyObject * res = PyBytes_FromStringAndSize(NULL, sizeof(glm::ivec3) * num_triangles);
     glm::ivec3 * ptr = (glm::ivec3 *)PyBytes_AS_STRING(res);
 
-    // TODO: sort
+    float * values = (float *)malloc(num_triangles * 8);
+    int * keys = (int *)(values + num_triangles);
+
+    for (int i = 0; i < num_triangles; ++i) {
+        const glm::vec3 & vert = *(glm::vec3 *)((char *)mesh_view.buf + stride * i * 3);
+        values[i] = glm::dot(vert, direction);
+        keys[i] = i;
+    }
+
+    // TODO: sort "keys" by "values"
+
+    for (int i = 0; i < num_triangles; ++i) {
+        *ptr++ = glm::ivec3 {keys[i] * 3 + 0, keys[i] * 3 + 1, keys[i] * 3 + 2};
+    }
 
     PyBuffer_Release(&mesh_view);
     return res;
