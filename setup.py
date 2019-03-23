@@ -1,4 +1,13 @@
+import platform
+
 from setuptools import Extension, setup
+
+target = platform.system().lower()
+
+extra_compile_args = []
+
+if target.startswith('linux'):
+    extra_compile_args.append('-std=c++11')
 
 ext = Extension(
     name='depth_sort',
