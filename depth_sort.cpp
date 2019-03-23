@@ -43,7 +43,7 @@ PyObject * meth_sort(PyObject * self, PyObject * args, PyObject * kwargs) {
     return res;
 }
 
-PyObject * meth_indexed_sort(PyObject * self, PyObject * args, PyObject * kwargs) {
+PyObject * meth_isort(PyObject * self, PyObject * args, PyObject * kwargs) {
     static char * keywords[] = {"direction", "mesh", "index", "stride", NULL};
 
     glm::vec3 direction;
@@ -85,7 +85,7 @@ PyObject * meth_indexed_sort(PyObject * self, PyObject * args, PyObject * kwargs
 
 PyMethodDef module_methods[] = {
     {"sort", (PyCFunction)meth_sort, METH_VARARGS | METH_KEYWORDS, 0},
-    {"indexed_sort", (PyCFunction)meth_indexed_sort, METH_VARARGS | METH_KEYWORDS, 0},
+    {"isort", (PyCFunction)meth_isort, METH_VARARGS | METH_KEYWORDS, 0},
     {0},
 };
 
